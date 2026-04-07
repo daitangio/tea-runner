@@ -122,8 +122,9 @@ def check_media_type():
 
 @app.route('/test', methods=['POST'])
 def test():
-    logging.debug('Content-Type: ' + request.headers.get('Content-Type'))
-    logging.debug(request.get_json(force=True))
+    logging.info("Test URL")
+    logging.info('Content-Type: ' + request.headers.get('Content-Type'))
+    logging.info(request.get_json(force=True))
     return jsonify(status='success', sender=request.remote_addr)
 
 
@@ -169,7 +170,8 @@ def rsync():
 @app.route('/docker/build', methods=['POST'])
 def docker_build():
     body = request.get_json()
-
+    logging.info("Docker build called")
+    logging.info(body)
     with TemporaryDirectory() as temp_dir:
         if git_clone(body['repository']['clone_url'], temp_dir):
             logging.info('docker build')
@@ -185,6 +187,7 @@ def docker_build():
 
 
 if __name__ == '__main__':
+    logging.info("TeaRunner Ready.")
     logging.info('Limiting requests to: ' + config.get('runner',
                  'ALLOWED_IP_RANGE', fallback='<any>'))
     serve(app, host=config.get('runner', 'LISTEN_IP', fallback='0.0.0.0'),
